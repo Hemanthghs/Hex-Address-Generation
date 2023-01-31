@@ -5,6 +5,7 @@ public and private keys are generated using RSA algorithm
 package main
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 
 var public_key int
 var private_key int
+
 var n int
 var primes []int = []int{
 	101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151,
@@ -30,7 +32,7 @@ var primes []int = []int{
 }
 
 func getPrime() int {
-	idx := rand.Intn(143)
+	idx := rand.Intn(143-50) + 50
 	if primes[idx] == -1 {
 		return getPrime()
 	}
@@ -44,7 +46,7 @@ func gcd(a, b int) int {
 	return a
 }
 
-func init() {
+func setKeys() {
 	p := getPrime()
 	q := getPrime()
 	n = p * q
@@ -68,8 +70,22 @@ func init() {
 	private_key = d
 }
 
+func generateHex() {
+	setKeys()
+	fmt.Println("Public Key  :", public_key)
+	fmt.Println("Private Key :", private_key)
+	h := sha256.New()
+	h.Write([]byte(strconv.Itoa(public_key)))
+	bs := h.Sum(nil)
+	fmt.Printf("Hex Address : %x", bs)
+	fmt.Println()
+	fmt.Println()
+}
+
 func main() {
-	fmt.Println("Public Key  : ", public_key)
-	fmt.Println("Private Key : ", private_key)
-	fmt.Println("Hex Address : ", SHA256(strconv.Itoa(public_key)))
+	generateHex()
+	generateHex()
+	generateHex()
+	generateHex()
+	generateHex()
 }
